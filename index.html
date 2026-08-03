@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Notion Widgets</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f0f10;color:#f7f7f7}
+    body{display:grid;place-items:center;padding:32px}
+    main{width:min(760px,100%)}
+    h1{margin:0 0 8px;font-size:clamp(30px,6vw,56px);letter-spacing:-.04em}
+    p{margin:0;color:#a7a7aa;line-height:1.6}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:30px}
+    a{display:block;padding:24px;border:1px solid #2a2a2d;border-radius:18px;background:#151516;color:inherit;text-decoration:none;transition:.16s ease}
+    a:hover{transform:translateY(-2px);border-color:#555;background:#19191b}
+    strong{display:block;font-size:20px;margin-bottom:8px}
+    span{color:#9b9b9f;font-size:14px;line-height:1.5}
+    code{color:#fff}
+    footer{margin-top:24px;font-size:12px;color:#666}
+    @media(max-width:580px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Notion Widgets</h1>
+    <p>Kho widget cá nhân. Mỗi widget có một đường dẫn riêng để nhúng vào Notion bằng <code>/embed</code>.</p>
+    <section class="grid">
+      <a href="/weather/">
+        <strong>Thời tiết</strong>
+        <span>Nhiệt độ °C và dự báo 5 ngày.</span>
+      </a>
+      <a href="/pomodoro/">
+        <strong>Pomodoro</strong>
+        <span>Đồng hồ tập trung trắng–đen, tối giản.</span>
+      </a>
+    </section>
+    <footer>Personal Notion widgets</footer>
+  </main>
+</body>
+</html>
