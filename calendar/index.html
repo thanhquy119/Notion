@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Calendar</title>
+<style>
+:root{--black:#0d0d0e;--white:#f8f8f6;--ink:#151516;--muted:#a5a5a5;--line:#dededb;--soft:#eef3ed;--radius:18px}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace}
+button{font:inherit}
+body{display:grid;place-items:center}
+.card{width:100%;height:100%;min-height:320px;overflow:hidden;border-radius:var(--radius);display:grid;grid-template-rows:auto auto 1fr;background:var(--white);color:var(--ink);border:1px solid #1c1c1d}
+.header{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;padding:14px 10px;background:var(--black);color:white}
+.nav{width:34px;height:34px;margin:auto;border:0;border-radius:50%;background:transparent;color:white;cursor:pointer;font-size:20px}
+.nav:hover{background:rgba(255,255,255,.1)}
+.title{text-align:center}
+.month{display:block;font-size:clamp(18px,4vw,26px);font-weight:800;line-height:1.1;text-transform:uppercase;letter-spacing:.03em}
+.year{display:block;margin-top:3px;font-size:10px;color:#d0d0d0;letter-spacing:.13em}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);padding:10px 8px;background:var(--soft);border-bottom:1px solid var(--line)}
+.weekdays span{text-align:center;font-size:10px;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(6,1fr);padding:4px 8px 8px}
+.day{display:grid;place-items:center;min-width:0;min-height:0;border:0;background:transparent;color:var(--ink);font-size:clamp(11px,2.5vw,15px);font-weight:600;cursor:default}
+.day.out{color:#c4c4c0}
+.day.today span{display:grid;place-items:center;width:74%;max-width:43px;aspect-ratio:1;border-radius:2px;background:var(--black);color:white}
+.day.selected:not(.today) span{display:grid;place-items:center;width:74%;max-width:43px;aspect-ratio:1;border:1px solid var(--black);border-radius:2px}
+.today-button{position:absolute;right:13px;bottom:10px;border:0;background:transparent;color:#777;font-size:8px;cursor:pointer}
+.wrap{position:relative;width:100%;height:100%;display:grid;grid-template-rows:auto auto 1fr}
+@media(max-height:350px){.header{padding-block:9px}.weekdays{padding-block:7px}.grid{padding-bottom:4px}.day{font-size:11px}}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="wrap">
+    <header class="header">
+      <button class="nav" id="prev" type="button" aria-label="Tháng trước">‹</button>
+      <div class="title"><span class="month" id="month">THÁNG 8</span><span class="year" id="year">2026</span></div>
+      <button class="nav" id="next" type="button" aria-label="Tháng sau">›</button>
+    </header>
+    <div class="weekdays" aria-hidden="true"><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span></div>
+    <section class="grid" id="grid" aria-label="Lịch tháng"></section>
+    <button class="today-button" id="todayButton" type="button">HÔM NAY</button>
+  </div>
+</main>
+<script>
+"use strict";
+const el={month:document.getElementById("month"),year:document.getElementById("year"),grid:document.getElementById("grid"),prev:document.getElementById("prev"),next:document.getElementById("next"),today:document.getElementById("todayButton")};
+const now=new Date(),todayKey=`${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+let view=new Date(now.getFullYear(),now.getMonth(),1),selected=null;
+function key(date){return`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`}
+function render(){
+  const year=view.getFullYear(),month=view.getMonth();
+  el.month.textContent=`THÁNG ${month+1}`;el.year.textContent=year;
+  const first=new Date(year,month,1);
+  const mondayIndex=(first.getDay()+6)%7;
+  const start=new Date(year,month,1-mondayIndex);
+  const fragment=document.createDocumentFragment();
+  for(let i=0;i<42;i++){
+    const date=new Date(start);date.setDate(start.getDate()+i);
+    const button=document.createElement("button");
+    button.type="button";button.className="day";
+    if(date.getMonth()!==month)button.classList.add("out");
+    const k=key(date);
+    if(k===todayKey)button.classList.add("today");
+    if(k===selected)button.classList.add("selected");
+    const span=document.createElement("span");span.textContent=date.getDate();
+    button.append(span);
+    button.addEventListener("click",()=>{selected=k;render()});
+    fragment.append(button);
+  }
+  el.grid.replaceChildren(fragment);
+  document.title=`Tháng ${month+1}/${year} — Calendar`;
+}
+el.prev.addEventListener("click",()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);selected=null;render()});
+el.next.addEventListener("click",()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);selected=null;render()});
+el.today.addEventListener("click",()=>{view=new Date(now.getFullYear(),now.getMonth(),1);selected=todayKey;render()});
+render();
+</script>
+</body>
+</html>
