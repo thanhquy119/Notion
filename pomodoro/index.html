@@ -9,25 +9,288 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>Pomodoro</title>
 <style>
-:root{--text:#f7f7f7;--muted:#96969b;--line:#2b2b2e;--track:#29292c;--progress:#f1f1f1;--radius:18px}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;color:var(--text);font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace}body{display:grid;place-items:center}button{font:inherit}.card{width:100%;height:100%;display:grid;grid-template-columns:minmax(260px,1fr) minmax(250px,.9fr);overflow:hidden;border-radius:var(--radius);background:radial-gradient(circle at 25% 18%,rgba(255,255,255,.035),transparent 30%),linear-gradient(135deg,#171718,#0e0e0f)}.timer-panel{display:grid;place-items:center;padding:24px;border-right:1px solid var(--line)}.timer-wrap{position:relative;width:min(250px,60vh,78vw);aspect-ratio:1;display:grid;place-items:center}.ring{position:absolute;inset:0;transform:rotate(-90deg);overflow:visible}.ring circle{fill:none;stroke-width:7}.track{stroke:var(--track)}.progress{stroke:var(--progress);stroke-linecap:round;transition:stroke-dashoffset .35s linear}.timer-content{text-align:center;z-index:1}.mode-label{margin:0 0 8px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}.time{margin:0;font-variant-numeric:tabular-nums;font-size:clamp(55px,9vw,84px);font-weight:700;letter-spacing:-.07em;line-height:1}.session-line{margin:12px 0 0;color:var(--muted);font-size:11px}.controls{display:flex;justify-content:center;gap:9px;margin-top:18px}.controls button,.mode-buttons button{border:1px solid var(--line);color:var(--text);cursor:pointer;transition:.15s}.controls button{min-width:84px;border-radius:999px;padding:10px 15px;background:#19191b;font-weight:700}.controls .primary{background:#f2f2f2;color:#111;border-color:#f2f2f2}.side{display:flex;flex-direction:column;justify-content:center;padding:26px}.side h1{margin:0 0 7px;font-size:27px;line-height:1.25}.side>p{margin:0;color:var(--muted);line-height:1.55;font-size:12px}.mode-buttons{display:grid;gap:8px;margin-top:22px}.mode-buttons button{display:flex;justify-content:space-between;align-items:center;width:100%;border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.025);text-align:left;font-size:12px}.mode-buttons button.active{border-color:#777;background:rgba(255,255,255,.08)}.mode-buttons small{color:var(--muted)}.options{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}.switch{position:relative;width:42px;height:23px}.switch input{position:absolute;opacity:0}.switch span{position:absolute;inset:0;border:1px solid #444;border-radius:999px;background:#252527;cursor:pointer}.switch span:after{content:"";position:absolute;width:15px;height:15px;left:3px;top:3px;border-radius:50%;background:#8a8a8e;transition:.15s}.switch input:checked+span{background:#efefef}.switch input:checked+span:after{transform:translateX(19px);background:#111}@media(max-width:680px){.card{grid-template-columns:1fr}.timer-panel{border-right:0;border-bottom:1px solid var(--line);padding:18px}.timer-wrap{width:min(205px,47vh,65vw)}.time{font-size:58px}.side{padding:18px}.side h1,.side>p{display:none}.mode-buttons{margin-top:0;grid-template-columns:repeat(3,1fr)}.mode-buttons button{display:block;padding:9px 5px;text-align:center;font-size:10px}.mode-buttons small{display:block;margin-top:3px}.options{margin-top:12px;padding-top:12px}}@media(max-height:380px){.timer-wrap{width:min(180px,45vh)}.controls{margin-top:12px}.side{padding:14px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+:root{
+  --bg:#101011;--bg2:#18181a;--panel:#171719;--text:#f7f7f7;--muted:#929298;
+  --line:rgba(255,255,255,.11);--track:#2a2a2e;--progress:#f2f2f3;--radius:18px
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;color:var(--text);font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace}
+button,input{font:inherit}
+body{display:grid;place-items:center}
+.card{
+  position:relative;width:100%;height:100%;min-height:330px;overflow:hidden;border-radius:var(--radius);
+  background:radial-gradient(circle at 50% -8%,rgba(255,255,255,.06),transparent 37%),linear-gradient(145deg,var(--bg2),var(--bg))
+}
+.main{
+  height:100%;display:grid;place-items:center;padding:18px 18px 20px;transition:filter .18s ease,transform .18s ease
+}
+.timer-stack{display:grid;justify-items:center}
+.timer-wrap{position:relative;width:min(192px,50vh,62vw);aspect-ratio:1;display:grid;place-items:center}
+.ring{position:absolute;inset:0;transform:rotate(-90deg);overflow:visible}
+.ring circle{fill:none;stroke-width:7}
+.track{stroke:var(--track)}
+.progress{stroke:var(--progress);stroke-linecap:round;transition:stroke-dashoffset .3s linear;filter:drop-shadow(0 0 4px rgba(255,255,255,.13))}
+.timer-content{text-align:center;z-index:1}
+.mode-label{margin:0 0 7px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.time{margin:0;font-size:clamp(43px,7vw,56px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.075em}
+.session-line{margin:10px 0 0;color:var(--muted);font-size:10px}
+.controls{display:flex;gap:9px;justify-content:center;margin-top:17px}
+.controls button{min-width:86px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#1a1a1c;color:var(--text);font-weight:700;cursor:pointer}
+.controls .primary{background:#f1f1f2;color:#111;border-color:#f1f1f2}
+.settings-toggle{
+  position:absolute;z-index:6;top:11px;right:11px;width:35px;height:35px;display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(0,0,0,.13);color:#eee;cursor:pointer
+}
+.settings-toggle svg{width:17px;height:17px;transition:transform .18s ease}
+.settings-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.sheet{
+  position:absolute;z-index:5;left:0;right:0;bottom:0;padding:15px 16px 16px;border-top:1px solid var(--line);
+  border-radius:18px 18px 0 0;background:rgba(19,19,21,.98);box-shadow:0 -20px 60px rgba(0,0,0,.35);
+  transform:translateY(102%);transition:transform .22s ease
+}
+.sheet.open{transform:translateY(0)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.sheet-title{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+.sheet-note{font-size:9px;color:var(--muted)}
+.mode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.mode-grid button{
+  padding:9px 5px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025);color:var(--text);font-size:10px;font-weight:700;cursor:pointer
+}
+.mode-grid button.active{background:#f1f1f2;color:#111;border-color:#f1f1f2}
+.custom-title{margin:12px 0 7px;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+.time-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.field{display:grid;gap:4px}
+.field label{color:var(--muted);font-size:8px}
+.field input{
+  width:100%;min-width:0;padding:8px 7px;border:1px solid var(--line);border-radius:9px;outline:none;
+  background:#111113;color:#fff;text-align:center;font-size:11px;font-weight:700
+}
+.sheet-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px}
+.auto-row{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:9px}
+.switch{position:relative;width:37px;height:21px;flex:0 0 auto}
+.switch input{position:absolute;opacity:0}
+.switch span{position:absolute;inset:0;border:1px solid #444;border-radius:999px;background:#252527;cursor:pointer}
+.switch span:after{content:"";position:absolute;width:13px;height:13px;left:3px;top:3px;border-radius:50%;background:#888;transition:.15s}
+.switch input:checked+span{background:#efefef;border-color:#efefef}
+.switch input:checked+span:after{transform:translateX(16px);background:#111}
+.apply{padding:8px 12px;border:0;border-radius:9px;background:#f1f1f2;color:#111;font-size:10px;font-weight:800;cursor:pointer}
+.toast{
+  position:absolute;z-index:8;left:50%;top:13px;transform:translate(-50%,-12px);padding:7px 10px;border:1px solid var(--line);
+  border-radius:999px;background:rgba(15,15,16,.95);color:var(--muted);font-size:9px;opacity:0;pointer-events:none;transition:.18s
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-height:390px){
+  .timer-wrap{width:min(164px,45vh)}
+  .controls{margin-top:11px}
+  .sheet{padding-top:12px}
+}
+@media(max-width:430px){
+  .time{font-size:45px}.timer-wrap{width:min(172px,48vh,58vw)}
+  .controls button{min-width:78px;padding-inline:11px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<main class="card"><section class="timer-panel"><div><div class="timer-wrap"><svg class="ring" viewBox="-6 -6 232 232" aria-hidden="true"><circle class="track" cx="110" cy="110" r="100"></circle><circle class="progress" id="progress" cx="110" cy="110" r="100"></circle></svg><div class="timer-content"><p class="mode-label" id="modeLabel">Tập trung</p><p class="time" id="time">25:00</p><p class="session-line">Phiên hoàn thành: <span id="sessions">0</span></p></div></div><div class="controls"><button class="primary" id="startPause" type="button">Bắt đầu</button><button id="reset" type="button">Đặt lại</button></div></div></section><section class="side"><h1>Pomodoro</h1><p>Tập trung vào một việc. Nghỉ ngắn giữa các phiên và nghỉ dài sau bốn phiên.</p><div class="mode-buttons" id="modeButtons"><button class="active" type="button" data-mode="focus"><span>Tập trung</span><small>25 phút</small></button><button type="button" data-mode="short"><span>Nghỉ ngắn</span><small>5 phút</small></button><button type="button" data-mode="long"><span>Nghỉ dài</span><small>15 phút</small></button></div><div class="options"><span>Âm báo khi hết giờ</span><label class="switch" aria-label="Bật hoặc tắt âm báo"><input id="soundToggle" type="checkbox" checked><span></span></label></div></section></main>
+<main class="card">
+  <button class="settings-toggle" id="settingsToggle" type="button" aria-label="Mở lựa chọn phiên và thời gian" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="main">
+    <div class="timer-stack">
+      <div class="timer-wrap">
+        <svg class="ring" viewBox="-7 -7 234 234" aria-hidden="true">
+          <circle class="track" cx="110" cy="110" r="100"></circle>
+          <circle class="progress" id="progress" cx="110" cy="110" r="100"></circle>
+        </svg>
+        <div class="timer-content">
+          <p class="mode-label" id="modeLabel">Tập trung</p>
+          <p class="time" id="time">25:00</p>
+          <p class="session-line">Đã học: <span id="sessions">0</span> phiên</p>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="primary" id="startPause" type="button">Bắt đầu</button>
+        <button id="reset" type="button">Đặt lại</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet" id="sheet" aria-hidden="true">
+    <div class="sheet-head">
+      <span class="sheet-title">Chế độ</span>
+      <span class="sheet-note">Tự lưu trên thiết bị</span>
+    </div>
+    <div class="mode-grid" id="modeGrid">
+      <button class="active" type="button" data-mode="focus">Tập trung</button>
+      <button type="button" data-mode="short">Nghỉ ngắn</button>
+      <button type="button" data-mode="long">Nghỉ dài</button>
+    </div>
+    <p class="custom-title">Thời gian tùy chỉnh · phút</p>
+    <div class="time-grid">
+      <div class="field"><label for="focusMinutes">Tập trung</label><input id="focusMinutes" type="number" min="1" max="180" step="1" inputmode="numeric"></div>
+      <div class="field"><label for="shortMinutes">Nghỉ ngắn</label><input id="shortMinutes" type="number" min="1" max="60" step="1" inputmode="numeric"></div>
+      <div class="field"><label for="longMinutes">Nghỉ dài</label><input id="longMinutes" type="number" min="1" max="120" step="1" inputmode="numeric"></div>
+    </div>
+    <div class="sheet-actions">
+      <label class="auto-row">
+        <span class="switch"><input id="autoSwitch" type="checkbox" checked><span></span></span>
+        Tự chuyển và chạy phiên kế tiếp
+      </label>
+      <button class="apply" id="apply" type="button">Áp dụng</button>
+    </div>
+  </section>
+  <div class="toast" id="toast">Đã lưu</div>
+</main>
+
 <script>
 "use strict";
-const MODES={focus:{label:"Tập trung",seconds:1500},short:{label:"Nghỉ ngắn",seconds:300},long:{label:"Nghỉ dài",seconds:900}};
-const el={time:document.getElementById("time"),modeLabel:document.getElementById("modeLabel"),progress:document.getElementById("progress"),startPause:document.getElementById("startPause"),reset:document.getElementById("reset"),sessions:document.getElementById("sessions"),soundToggle:document.getElementById("soundToggle"),modeButtons:document.getElementById("modeButtons")};
-const circumference=2*Math.PI*100;el.progress.style.strokeDasharray=`${circumference} ${circumference}`;let mode="focus",remaining=MODES[mode].seconds,timerId=null,endAt=null,completed=Number(localStorage.getItem("pomodoro-completed")||0);try{const saved=localStorage.getItem("pomodoro-sound");if(saved!==null)el.soundToggle.checked=saved==="true"}catch{}el.sessions.textContent=completed;
-function formatTime(seconds){return`${String(Math.floor(seconds/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`}
-function render(){const total=MODES[mode].seconds,ratio=Math.max(0,Math.min(1,remaining/total));el.time.textContent=formatTime(remaining);el.modeLabel.textContent=MODES[mode].label;el.progress.style.strokeDashoffset=circumference*(1-ratio);document.title=`${formatTime(remaining)} — ${MODES[mode].label}`}
-function stop(){if(timerId!==null){clearInterval(timerId);timerId=null}endAt=null;el.startPause.textContent="Bắt đầu"}
-function tick(){if(!endAt)return;remaining=Math.max(0,Math.ceil((endAt-Date.now())/1000));render();if(remaining<=0)finish()}
-function start(){if(remaining<=0)remaining=MODES[mode].seconds;endAt=Date.now()+remaining*1000;timerId=setInterval(tick,250);el.startPause.textContent="Tạm dừng";tick()}
-function beep(){if(!el.soundToggle.checked)return;try{const AudioContext=window.AudioContext||window.webkitAudioContext,ctx=new AudioContext(),now=ctx.currentTime;[0,.24,.48].forEach(delay=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.frequency.value=740;gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(.15,now+delay+.02);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+.16);osc.connect(gain);gain.connect(ctx.destination);osc.start(now+delay);osc.stop(now+delay+.18)});setTimeout(()=>ctx.close(),1000)}catch{}}
-function finish(){stop();remaining=0;render();beep();if(mode==="focus"){completed++;el.sessions.textContent=completed;try{localStorage.setItem("pomodoro-completed",completed)}catch{}setTimeout(()=>setMode(completed%4===0?"long":"short"),700)}}
-function setMode(next){stop();mode=next;remaining=MODES[mode].seconds;document.querySelectorAll("[data-mode]").forEach(button=>button.classList.toggle("active",button.dataset.mode===mode));render()}
-el.startPause.addEventListener("click",()=>timerId===null?start():(tick(),stop()));el.reset.addEventListener("click",()=>{stop();remaining=MODES[mode].seconds;render()});el.modeButtons.addEventListener("click",event=>{const button=event.target.closest("[data-mode]");if(button)setMode(button.dataset.mode)});el.soundToggle.addEventListener("change",()=>{try{localStorage.setItem("pomodoro-sound",String(el.soundToggle.checked))}catch{}});document.addEventListener("visibilitychange",()=>{if(!document.hidden&&timerId!==null)tick()});render();
+const DEFAULT_DURATIONS={focus:25,short:5,long:15};
+const LABELS={focus:"Tập trung",short:"Nghỉ ngắn",long:"Nghỉ dài"};
+const STORAGE_KEY="pomodoro-v4-settings";
+const els={
+  time:document.getElementById("time"),modeLabel:document.getElementById("modeLabel"),
+  progress:document.getElementById("progress"),startPause:document.getElementById("startPause"),
+  reset:document.getElementById("reset"),sessions:document.getElementById("sessions"),
+  settingsToggle:document.getElementById("settingsToggle"),sheet:document.getElementById("sheet"),
+  modeGrid:document.getElementById("modeGrid"),focusMinutes:document.getElementById("focusMinutes"),
+  shortMinutes:document.getElementById("shortMinutes"),longMinutes:document.getElementById("longMinutes"),
+  autoSwitch:document.getElementById("autoSwitch"),apply:document.getElementById("apply"),toast:document.getElementById("toast")
+};
+const circumference=2*Math.PI*100;
+els.progress.style.strokeDasharray=`${circumference} ${circumference}`;
+let settings={durations:{...DEFAULT_DURATIONS},autoSwitch:true};
+let mode="focus",remaining=1500,timerId=null,endAt=null,completed=0,transitionTimer=null;
+
+function clamp(value,min,max,fallback){
+  const number=Number(value);
+  return Number.isFinite(number)?Math.min(max,Math.max(min,Math.round(number))):fallback;
+}
+function loadState(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(saved?.durations){
+      settings.durations.focus=clamp(saved.durations.focus,1,180,25);
+      settings.durations.short=clamp(saved.durations.short,1,60,5);
+      settings.durations.long=clamp(saved.durations.long,1,120,15);
+    }
+    if(typeof saved?.autoSwitch==="boolean")settings.autoSwitch=saved.autoSwitch;
+    completed=clamp(localStorage.getItem("pomodoro-completed"),0,99999,0);
+  }catch{}
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(settings));
+    localStorage.setItem("pomodoro-completed",String(completed));
+  }catch{}
+}
+function secondsFor(currentMode){return settings.durations[currentMode]*60}
+function formatTime(seconds){
+  return`${String(Math.floor(seconds/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`;
+}
+function render(){
+  const total=secondsFor(mode);
+  const ratio=Math.max(0,Math.min(1,remaining/Math.max(1,total)));
+  els.time.textContent=formatTime(remaining);
+  els.modeLabel.textContent=LABELS[mode];
+  els.sessions.textContent=completed;
+  els.progress.style.strokeDashoffset=circumference*(1-ratio);
+  document.querySelectorAll("[data-mode]").forEach(button=>button.classList.toggle("active",button.dataset.mode===mode));
+  document.title=`${formatTime(remaining)} — ${LABELS[mode]}`;
+}
+function stopTimer(){
+  if(timerId!==null){clearInterval(timerId);timerId=null}
+  endAt=null;
+  els.startPause.textContent="Bắt đầu";
+}
+function tick(){
+  if(!endAt)return;
+  remaining=Math.max(0,Math.ceil((endAt-Date.now())/1000));
+  render();
+  if(remaining<=0)finishCurrentMode();
+}
+function startTimer(){
+  if(remaining<=0)remaining=secondsFor(mode);
+  if(timerId!==null)return;
+  endAt=Date.now()+remaining*1000;
+  timerId=setInterval(tick,250);
+  els.startPause.textContent="Tạm dừng";
+  tick();
+}
+function pauseTimer(){tick();stopTimer()}
+function beep(){
+  try{
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    const ctx=new AudioContext(),now=ctx.currentTime;
+    [0,.22,.44].forEach(delay=>{
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.type="sine";osc.frequency.value=720;
+      gain.gain.setValueAtTime(.0001,now+delay);
+      gain.gain.exponentialRampToValueAtTime(.13,now+delay+.02);
+      gain.gain.exponentialRampToValueAtTime(.0001,now+delay+.15);
+      osc.connect(gain);gain.connect(ctx.destination);osc.start(now+delay);osc.stop(now+delay+.17);
+    });
+    setTimeout(()=>ctx.close(),900);
+  }catch{}
+}
+function nextMode(){
+  if(mode==="focus")return completed%4===0?"long":"short";
+  return"focus";
+}
+function finishCurrentMode(){
+  stopTimer();remaining=0;render();beep();
+  if(mode==="focus"){completed+=1;saveState();render()}
+  const next=nextMode();
+  clearTimeout(transitionTimer);
+  transitionTimer=setTimeout(()=>{
+    setMode(next,false);
+    if(settings.autoSwitch)startTimer();
+  },850);
+}
+function setMode(next,stop=true){
+  clearTimeout(transitionTimer);
+  if(stop)stopTimer();
+  mode=next;
+  remaining=secondsFor(mode);
+  render();
+}
+function resetCurrent(){
+  clearTimeout(transitionTimer);stopTimer();remaining=secondsFor(mode);render();
+}
+function toggleSheet(force){
+  const open=typeof force==="boolean"?force:!els.sheet.classList.contains("open");
+  els.sheet.classList.toggle("open",open);
+  els.sheet.setAttribute("aria-hidden",String(!open));
+  els.settingsToggle.setAttribute("aria-expanded",String(open));
+}
+function fillInputs(){
+  els.focusMinutes.value=settings.durations.focus;
+  els.shortMinutes.value=settings.durations.short;
+  els.longMinutes.value=settings.durations.long;
+  els.autoSwitch.checked=settings.autoSwitch;
+}
+function showToast(text="Đã lưu"){
+  els.toast.textContent=text;els.toast.classList.add("show");
+  setTimeout(()=>els.toast.classList.remove("show"),1200);
+}
+function applySettings(){
+  settings.durations.focus=clamp(els.focusMinutes.value,1,180,settings.durations.focus);
+  settings.durations.short=clamp(els.shortMinutes.value,1,60,settings.durations.short);
+  settings.durations.long=clamp(els.longMinutes.value,1,120,settings.durations.long);
+  settings.autoSwitch=els.autoSwitch.checked;
+  saveState();resetCurrent();fillInputs();showToast();toggleSheet(false);
+}
+els.startPause.addEventListener("click",()=>timerId===null?startTimer():pauseTimer());
+els.reset.addEventListener("click",resetCurrent);
+els.settingsToggle.addEventListener("click",()=>toggleSheet());
+els.modeGrid.addEventListener("click",event=>{
+  const button=event.target.closest("[data-mode]");
+  if(button)setMode(button.dataset.mode);
+});
+els.apply.addEventListener("click",applySettings);
+document.addEventListener("keydown",event=>{if(event.key==="Escape")toggleSheet(false)});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&timerId!==null)tick()});
+loadState();remaining=secondsFor(mode);fillInputs();render();
 </script>
 </body>
 </html>
