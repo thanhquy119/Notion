@@ -15,22 +15,14 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent
 button{font:inherit}
 body{padding:1px}
 .card{--radius:clamp(9px,3vmin,18px);width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;isolation:isolate;transform:translateZ(0);clip-path:inset(0 round var(--radius));border-radius:var(--radius);container-type:size;display:grid;grid-template-rows:auto auto minmax(0,1fr);background:var(--white);color:var(--ink);border:1px solid #1c1c1d}
-.header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:clamp(6px,3cqmin,14px) clamp(6px,2.2cqmin,12px);background:var(--black);color:white}
-.nav{width:clamp(24px,9cqmin,36px);height:clamp(24px,9cqmin,36px);display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:white;cursor:pointer;font-size:clamp(15px,5.5cqmin,22px);line-height:1}
-.nav:hover{background:rgba(255,255,255,.1)}
-.title{text-align:center;min-width:0}
-.month{display:block;font-size:clamp(12px,5.2cqmin,26px);font-weight:800;line-height:1.15;text-transform:uppercase;letter-spacing:.025em;white-space:nowrap}
-.year{display:block;margin-top:clamp(1px,.7cqmin,4px);font-size:clamp(7px,2.4cqmin,11px);color:#d0d0d0;letter-spacing:.12em}
-.weekdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:clamp(5px,2.2cqmin,10px) clamp(3px,1.8cqmin,8px);background:var(--soft);border-bottom:1px solid var(--line)}
-.weekdays span{text-align:center;font-size:clamp(7px,2.5cqmin,11px);font-weight:800}
-.grid{min-height:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));padding:clamp(2px,1.2cqmin,5px) clamp(3px,1.8cqmin,8px) clamp(4px,2cqmin,9px)}
-.day{display:grid;place-items:center;min-width:0;min-height:0;padding:0;border:0;background:transparent;color:var(--ink);font-size:clamp(7px,3cqmin,15px);font-weight:600;line-height:1;cursor:default}
-.day.out{color:#c4c4c0}
-.day span{display:grid;place-items:center;width:clamp(16px,10cqmin,43px);height:clamp(16px,10cqmin,43px);max-width:74%;max-height:74%;border-radius:clamp(2px,.8cqmin,4px)}
-.day.today span{background:var(--black);color:white}
-.day.selected:not(.today) span{border:1px solid var(--black)}
-@container (max-height:260px){.header{padding-block:4px}.weekdays{padding-block:4px}.year{display:none}.day span{width:clamp(14px,8cqmin,30px);height:clamp(14px,8cqmin,30px)}}
-@container (max-width:250px){.month{font-size:clamp(10px,5cqmin,18px)}.weekdays span{font-size:clamp(6px,2.2cqmin,9px)}}
+.header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:clamp(8px,3.6cqmin,16px) clamp(7px,2.6cqmin,13px);background:var(--black);color:white}
+.nav{width:clamp(26px,9cqmin,38px);height:clamp(26px,9cqmin,38px);display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:white;cursor:pointer;font-size:clamp(17px,6cqmin,24px);line-height:1}.nav:hover{background:rgba(255,255,255,.1)}
+.title{text-align:center;min-width:0}.month{display:block;font-size:clamp(16px,6.4cqmin,28px);font-weight:800;line-height:1.15;text-transform:uppercase;letter-spacing:.025em;white-space:nowrap}.year{display:block;margin-top:clamp(2px,.8cqmin,4px);font-size:clamp(8px,2.8cqmin,12px);color:#d0d0d0;letter-spacing:.12em}
+.weekdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:clamp(6px,2.7cqmin,12px) clamp(3px,1.8cqmin,8px);background:var(--soft);border-bottom:1px solid var(--line)}.weekdays span{text-align:center;font-size:clamp(8px,3.1cqmin,12px);font-weight:800}
+.grid{min-height:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));padding:clamp(3px,1.5cqmin,6px) clamp(3px,1.8cqmin,8px) clamp(5px,2.3cqmin,10px)}
+.day{display:grid;place-items:center;min-width:0;min-height:0;padding:0;border:0;background:transparent;color:var(--ink);font-size:clamp(9px,3.7cqmin,16px);font-weight:600;line-height:1;cursor:default}.day.out{color:#c4c4c0}.day span{display:grid;place-items:center;width:clamp(19px,11cqmin,45px);height:clamp(19px,11cqmin,45px);max-width:76%;max-height:76%;border-radius:clamp(2px,.8cqmin,4px)}.day.today span{background:var(--black);color:white}.day.selected:not(.today) span{border:1px solid var(--black)}
+@container (max-height:260px){.header{padding-block:5px}.weekdays{padding-block:5px}.year{display:none}.day{font-size:clamp(8px,3.3cqh,12px)}.day span{width:clamp(16px,9cqh,31px);height:clamp(16px,9cqh,31px)}}
+@container (max-width:250px){.month{font-size:clamp(13px,5.8cqmin,20px)}.weekdays span{font-size:clamp(7px,2.7cqmin,10px)}.day{font-size:clamp(8px,3.4cqmin,13px)}}
 </style>
 </head>
 <body>
@@ -42,13 +34,10 @@ body{padding:1px}
 <script>
 "use strict";
 const el={month:document.getElementById("month"),year:document.getElementById("year"),grid:document.getElementById("grid"),prev:document.getElementById("prev"),next:document.getElementById("next")};
-const now=new Date(),todayKey=`${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
-let view=new Date(now.getFullYear(),now.getMonth(),1),selected=null;
+const now=new Date(),todayKey=`${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;let view=new Date(now.getFullYear(),now.getMonth(),1),selected=null;
 function key(date){return`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`}
 function render(){const year=view.getFullYear(),month=view.getMonth();el.month.textContent=`THÁNG ${month+1}`;el.year.textContent=String(year);const first=new Date(year,month,1),mondayIndex=(first.getDay()+6)%7,start=new Date(year,month,1-mondayIndex);const fragment=document.createDocumentFragment();for(let i=0;i<42;i++){const date=new Date(start);date.setDate(start.getDate()+i);const button=document.createElement("button");button.type="button";button.className="day";if(date.getMonth()!==month)button.classList.add("out");const dateKey=key(date);if(dateKey===todayKey)button.classList.add("today");if(dateKey===selected)button.classList.add("selected");const span=document.createElement("span");span.textContent=String(date.getDate());button.append(span);button.addEventListener("click",()=>{selected=dateKey;render()});fragment.append(button)}el.grid.replaceChildren(fragment);document.title=`Tháng ${month+1}/${year} — Calendar`}
-el.prev.addEventListener("click",()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);selected=null;render()});
-el.next.addEventListener("click",()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);selected=null;render()});
-render();
+el.prev.addEventListener("click",()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);selected=null;render()});el.next.addEventListener("click",()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);selected=null;render()});render();
 </script>
 </body>
 </html>
